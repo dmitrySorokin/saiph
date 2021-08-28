@@ -65,7 +65,7 @@ Local::Local() : _unanswered_chars(1), _synchronous(0) {
 		int result;
 		setenv("TERM", "xterm", 1);
 		setenv("SAIPH_INLINE_SYNC", "1", 1);
-		result = execl("/bin/sh", "sh", "-c", LOCAL_NETHACK, NULL);
+		result = execl("/usr/local/bin/python3", "/usr/local/bin/python3", "nethack.py", NULL);
 		if (result < 0) {
 			Debug::error() << "Unable to enter the dungeon" << endl;
 			World::destroy();

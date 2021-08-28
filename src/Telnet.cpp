@@ -9,6 +9,7 @@
 #include "Globals.h"
 #include "Telnet.h"
 #include "World.h"
+#include <unistd.h>
 
 using namespace std;
 
@@ -83,8 +84,8 @@ Telnet::Telnet() : _vt_tiledata2011(false), _overs_pending(0) {
 	 * send "1" for nethack and hope it'll still work
 	 * on other servers */
 	/* and about a year later it was changed so no need to send "1" anymore */
-	//transmit("1");
-	//doRetrieve(discard, TELNET_BUFFER_SIZE);
+	transmit("p");
+	doRetrieve(discard, TELNET_BUFFER_SIZE);
 
 	/* and start a game */
 	start();
