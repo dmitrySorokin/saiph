@@ -65,7 +65,7 @@ Local::Local() : _unanswered_chars(1), _synchronous(0) {
 		int result;
 		setenv("TERM", "xterm", 1);
 		setenv("SAIPH_INLINE_SYNC", "1", 1);
-		result = execl("/usr/local/bin/python3", "/usr/local/bin/python3", "nethack.py", NULL);
+		result = execl("/usr/local/bin/python3", "/usr/local/bin/python3", "../nethack.py", NULL);
 		if (result < 0) {
 			Debug::error() << "Unable to enter the dungeon" << endl;
 			World::destroy();
@@ -102,14 +102,9 @@ int Local::doRetrieve(char* buffer, int count) {
 	ssize_t amount;
 	if (_synchronous > 0) {
 		do {
+			usleep(20000);
 			amount = read(_link[0], &buffer[data_received], count - data_received - 2);
-			if (amount > 0) {
-				int th = removeThorns(&buffer[data_received], amount);
-				data_received -= th;
-				_unanswered_chars -= th;
-				data_received += amount;
-			}
-		} while (amount > 0 && _unanswered_chars);
+		} while (amount > 0);
 	} else {
 		/* make reading blocking */
 		//fcntl(link[0], F_SETFL, fcntl(link[0], F_GETFL) & ~O_NONBLOCK);
@@ -120,22 +115,12 @@ int Local::doRetrieve(char* buffer, int count) {
 		/* usleep some ms here (after the blocked reading) both to
 		 * make sure that we've received all the data and to make the
 		 * game watchable  */
-		usleep(20000);
+		// usleep(200000);
 		do {
-			amount = read(_link[0], &buffer[data_received], count - data_received - 2);
-			if (amount > 0)
-				data_received += amount;
-		} while (amount > 1000 && !(amount & (amount + 1))); // power of 2 test
-		if (data_received > 0) {
-			int th = removeThorns(buffer, data_received);
-			if (th > 0) {
-				data_received -= th;
-				_unanswered_chars = 0;
-				_synchronous = 1;
-				Debug::info() << "Using inband syncronization" << endl;
-				fcntl(_link[0], F_SETFL, fcntl(_link[0], F_GETFL) & ~O_NONBLOCK);
-			}
-		}
+			usleep(20000);
+			amount = read(_link[0], &buffer[data_received], count - data_received);
+			data_received += amount;
+		} while (amount > 0); // power of 2 test
 	}
 	if (data_received < (ssize_t) count)
 		buffer[data_received] = '\0';

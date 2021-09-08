@@ -1,7 +1,7 @@
 #ifndef WORLD_H
 #define WORLD_H
 /* buffer */
-#define BUFFER_SIZE 65536
+#define BUFFER_SIZE 655360
 #define MAX_LEVELNAME_LENGTH 16
 /* stuff for parsing attribute & status rows */
 #define ATTRIBUTES_ROW 22
@@ -136,7 +136,7 @@ private:
 	static void fetchMenu();
 	static void fetchMenuText(int stoprow, int startcol, bool addspaces);
 	static void fetchMessages();
-	static void handleEscapeSequence(int* pos, int* color);
+	static bool handleEscapeSequence(int* pos, unsigned char* ch, int* color);
 	static void update();
 	static void refresh();
 };

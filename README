@@ -47,7 +47,7 @@ Then build & start the bot:
  cd build
  cmake ..
  make
- ./saiph
+ ./saiph -l
 
 
 People who are working on or have contributed to saiph:
